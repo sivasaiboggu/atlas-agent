@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Atlas — a general-purpose everyday agent. Searches the web, checks the weather, drafts mail, keeps tasks and notes, reads files, and answers from real results. Runs on your own free Gemini API key.">
+<meta name="theme-color" content="#0a0e14">
+<title>Atlas — everyday agent</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0e14'/%3E%3Ctext x='16' y='22' font-family='Arial' font-size='17' font-weight='700' fill='%23f5a524' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <div class="scrim" id="scrim" aria-hidden="true"></div>
+
+  <!-- Left rail: missions, notes, chats -->
+  <aside class="sidebar" id="sidebar" aria-label="Missions, notes and chats">
+    <div class="sidebar-head">
+      <a class="wordmark" href="#" id="wordmark" title="Atlas — home">
+        <span class="wordmark-mark" aria-hidden="true">A</span>
+        <span class="wordmark-name">Atlas</span>
+      </a>
+      <button class="icon-btn" id="closeSidebarBtn" aria-label="Close sidebar" title="Close sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <nav class="side-nav" aria-label="Views">
+      <button class="nav-item active" id="homeBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+    </nav>
+
+    <button class="new-chat-btn" id="newChatBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      New chat
+      <kbd>Ctrl ⇧ K</kbd>
+    </button>
+
+    <div class="rail-scroll">
+      <section class="rail-section" aria-label="Missions">
+        <h2 class="rail-heading">Missions <span class="rail-count" id="taskCount"></span></h2>
+        <div class="task-add">
+          <input type="text" id="taskInput" placeholder="Add a task" aria-label="Add a task" maxlength="200" autocomplete="off">
+          <button class="task-add-btn" id="addTaskBtn" aria-label="Add task" title="Add task">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+        <ul class="task-list" id="taskList"></ul>
+      </section>
+
+      <section class="rail-section" aria-label="Plans">
+        <h2 class="rail-heading">Plans <span class="rail-count" id="planCount"></span></h2>
+        <div class="plans-empty" id="plansEmpty">No plans yet. A plan appears when a request needs several steps.</div>
+        <ul class="plan-list" id="planList"></ul>
+      </section>
+
+      <section class="rail-section" aria-label="Reminders">
+        <h2 class="rail-heading">Reminders <span class="rail-count" id="reminderCount"></span></h2>
+        <div class="reminders-empty" id="remindersEmpty">No reminders. Type “remind me to … at 3pm”.</div>
+        <ul class="reminder-list" id="reminderList"></ul>
+        <p class="rail-hint">Reminders only fire while Atlas is open in a tab.</p>
+      </section>
+
+      <section class="rail-section" aria-label="Notes">
+        <h2 class="rail-heading">Notes <span class="rail-count" id="noteCount"></span></h2>
+        <div class="notes-empty" id="notesEmpty">No notes yet. Ask Atlas to save one.</div>
+        <ul class="note-list" id="noteList"></ul>
+      </section>
+
+      <section class="rail-section" aria-label="Chats">
+        <h2 class="rail-heading">Chats</h2>
+        <div class="sidebar-search">
+          <input type="search" id="searchInput" placeholder="Search everything" aria-label="Search chats, tasks and notes" autocomplete="off">
+        </div>
+        <nav class="sidebar-list" id="chatList" aria-label="Chat history"></nav>
+      </section>
+    </div>
+
+    <div class="sidebar-foot">
+      <button id="settingsBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </button>
+      <button id="themeBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <span id="themeBtnLabel">Light mode</span>
+      </button>
+      <div class="key-state" id="keyState">No API key set</div>
+    </div>
+  </aside>
+
+  <!-- Centre: agent chat -->
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open sidebar" title="Open sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <nav class="crumb" aria-label="Breadcrumb">
+        <button type="button" id="crumbHome" class="crumb-link">Atlas</button>
+        <span class="crumb-sep" aria-hidden="true">/</span>
+        <span class="crumb-current" id="crumbCurrent">Home</span>
+      </nav>
+      <div class="topbar-spacer"></div>
+      <button class="search-btn" id="paletteBtn" type="button" aria-label="Search and commands" title="Search and commands">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search</span>
+        <kbd>⌘K</kbd>
+      </button>
+      <div class="model-picker" title="Model — replies come from Google Gemini">
+        <select id="modelSelect" aria-label="Model">
+          <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+          <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+          <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+        </select>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="topbar-spacer"></div>
+      <button class="share-btn" id="traceToggleBtn" aria-label="Show or hide the tool trace" title="Show or hide the tool trace">Trace</button>
+      <button class="share-btn" id="copyLinkBtn" title="Copy this chat as Markdown">Share</button>
+    </header>
+
+    <div class="home-scroll" id="homeScroll" hidden>
+      <div class="home" id="homeRoot"></div>
+    </div>
+
+    <div class="chat-scroll" id="chatScroll">
+      <div class="chat" id="chatRoot"></div>
+    </div>
+
+    <div class="composer-wrap" id="composerWrap">
+      <div class="composer">
+        <div class="slash-menu" id="slashMenu" role="listbox" aria-label="Commands" hidden></div>
+        <div class="file-chip" id="fileChip" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          <span id="fileChipName"></span>
+          <button type="button" id="fileChipRemove" aria-label="Remove attached file" title="Remove attached file">Remove</button>
+        </div>
+        <div class="composer-box">
+          <textarea id="composerInput" rows="1" placeholder="Ask Atlas to do something" aria-label="Message" maxlength="20000"></textarea>
+          <div class="composer-row">
+            <button class="icon-btn attach-btn" id="attachBtn" aria-label="Attach a text file" title="Attach a text file (.txt, .md, .csv, .json, .log)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            </button>
+            <input type="file" id="fileInput" accept=".txt,.md,.csv,.json,.log,.html" hidden>
+            <span class="composer-hint">Enter to send &middot; Shift+Enter for a new line</span>
+            <span class="spacer"></span>
+            <button class="icon-btn mic-btn" id="micBtn" aria-label="Dictate a message" title="Dictate a message">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+            </button>
+            <button class="composer-stop" id="stopBtn" hidden aria-label="Stop generating" title="Stop generating">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            </button>
+            <button class="composer-send" id="sendBtn" aria-label="Send message" title="Send">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Trace drawer: opens on demand, never a permanent third rail -->
+  <aside class="trace-rail" id="traceRail" aria-label="Tool trace">
+    <div class="trace-head">
+      <h2>Trace</h2>
+      <span class="trace-status" id="traceStatus">Idle</span>
+      <button class="icon-btn" id="closeTraceBtn" aria-label="Close trace" title="Close trace">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="trace-body" id="traceBody"></div>
+  </aside>
+</div>
+
+<!-- Settings modal -->
+<div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="modal">
+    <h2 id="settingsTitle">Settings</h2>
+    <p class="modal-sub">Replies come from Google Gemini. Paste your own free API key — it is stored only in this browser, never sent anywhere except to Google's API.</p>
+
+    <label for="apiKeyInput">Gemini API key</label>
+    <div class="key-row">
+      <input type="password" id="apiKeyInput" placeholder="AIza…" autocomplete="off" spellcheck="false">
+      <button class="btn" id="toggleKeyVisibility" type="button">Show</button>
+    </div>
+    <p class="field-hint">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. If the key is wrong, the app says so plainly instead of inventing an answer.</p>
+
+    <label for="settingsModelSelect">Model</label>
+    <select id="settingsModelSelect">
+      <option value="gemini-2.5-flash">Gemini 2.5 Flash — fast, default</option>
+      <option value="gemini-2.0-flash">Gemini 2.0 Flash — fallback</option>
+      <option value="gemini-2.5-pro">Gemini 2.5 Pro — strongest, slower</option>
+    </select>
+    <p class="field-hint">If a model is unavailable for your key, the error from Google is shown as-is.</p>
+
+    <div class="modal-actions">
+      <button class="btn danger" id="clearDataBtn" type="button">Erase all chats</button>
+      <button class="btn primary" id="saveSettingsBtn" type="button">Save</button>
+    </div>
+
+    <hr>
+    <h3 class="settings-subhead">Data</h3>
+    <p class="field-hint">A backup holds chats, tasks, notes, reminders and plans. It never includes your API key.</p>
+    <div class="modal-actions data-actions">
+      <button class="btn" id="exportBtn" type="button">Back up data</button>
+      <button class="btn" id="importBtn" type="button">Restore from backup</button>
+      <input type="file" id="importInput" accept=".json,application/json" hidden>
+    </div>
+    <p class="field-hint">Restoring replaces everything currently in Atlas. Reminders only fire while Atlas is open in a tab — a page cannot wake itself.</p>
+
+    <hr>
+    <div class="about">
+      <p><strong>About this app.</strong> Atlas is a general-purpose everyday agent: job search, mail, web research, tasks, notes, files, planning — anything you ask it to do. It works by calling real tools in this browser and answering from what they return. It never invents a fact, a link, or a sent mail.</p>
+      <p>Tools it can use: web search, reading pages, weather, tasks, notes, mail drafts, arithmetic, reading attached files.</p>
+      <p>Nothing you type leaves this browser except the messages you send to Google Gemini, using your key. Chats, tasks and notes live in this browser's local storage. Erasing them removes them for good.</p>
+      <p><strong>What Atlas cannot do.</strong> It cannot send mail by itself — drafts open in Gmail for you to send. It cannot drive other websites or your browser; a page can only read what sites allow it to read. Some pages block cross-origin reads, and Atlas says so instead of guessing.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Note viewer modal -->
+<div class="modal-backdrop" id="noteModal" role="dialog" aria-modal="true" aria-labelledby="noteTitle">
+  <div class="modal">
+    <h2 id="noteTitle"></h2>
+    <p class="modal-sub" id="noteMeta"></p>
+    <p class="note-text" id="noteText"></p>
+    <div class="modal-actions">
+      <button class="btn danger" id="deleteNoteBtn" type="button">Delete note</button>
+      <button class="btn" id="closeNoteBtn" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Command palette -->
+<div class="palette-backdrop" id="paletteModal" role="dialog" aria-modal="true" aria-label="Search and commands">
+  <div class="palette">
+    <div class="palette-input-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="paletteInput" placeholder="Search chats, tasks, notes, or run a command" aria-label="Search and commands" autocomplete="off">
+      <kbd>Esc</kbd>
+    </div>
+    <div class="palette-list" id="paletteList" role="listbox"></div>
+    <div class="palette-foot"><span>↑↓ to move</span><span>Enter to open</span><span>Esc to close</span></div>
+  </div>
+</div>
+
+<script type="module" src="src/app.js"></script>
+</body>
+</html>
