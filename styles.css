@@ -404,10 +404,10 @@ select:focus-visible, a:focus-visible, .task-check:focus-visible {
 .topbar .share-btn.active { color: var(--accent); border-color: var(--accent-dim); }
 
 /* ---------- chat ---------- */
-.chat-scroll { flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+.chat-scroll { flex: 1; min-width: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
 .chat { max-width: var(--column-w); margin: 0 auto; padding: 32px 0 16px; }
 
-.msg { margin: 0 0 32px; animation: msg-in 200ms ease; }
+.msg { margin: 0 0 32px; min-width: 0; animation: msg-in 200ms ease; }
 @keyframes msg-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .msg-user { display: flex; justify-content: flex-end; }
 .msg-user-bubble {
@@ -473,6 +473,7 @@ select:focus-visible, a:focus-visible, .task-check:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   background: var(--surface);
   padding: 7px 12px;
   font-family: var(--font-mono);
@@ -480,10 +481,12 @@ select:focus-visible, a:focus-visible, .task-check:focus-visible {
   color: var(--muted);
   border-bottom: 1px solid var(--border);
 }
+.code-block-head > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .code-block-head button {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  flex: 0 0 auto;
   font-size: 12px;
   color: var(--muted);
   padding: 3px 6px;

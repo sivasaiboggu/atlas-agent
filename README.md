@@ -27,10 +27,9 @@ No build step. Open `index.html` in a browser, or serve the folder:
 npm start        # python3 -m http.server 8000, then open http://localhost:8000
 ```
 
-GitHub Pages-ready: the repo root is the site. No repo exists yet — create
-one named `atlas-agent` and push straight to `main` (no pull request),
-then enable Pages (Settings → Pages → Deploy from a branch → `main`,
-`/(root)`).
+GitHub Pages-ready: the repo root is the site. The code is pushed to
+`sivasaiboggu/atlas-agent` on `main`; enable Pages (Settings → Pages →
+Deploy from a branch → `main`, `/(root)`) to put it live.
 
 ## First use (what Siva must supply)
 
@@ -257,8 +256,8 @@ for the same reason.
   is the way to keep a copy.
 - **Fonts come from Google Fonts** (Inter + JetBrains Mono). Offline they
   fall back to system fonts; everything still works.
-- **Not pushed to GitHub.** No `atlas-agent` repo exists yet — Siva
-  creates it, then the push goes straight to `main` (no pull request).
+- **Pushed to GitHub** (`sivasaiboggu/atlas-agent`, `main`). Pages is not
+  enabled yet — Siva must enable it in Settings → Pages.
 
 ## Launch checklist
 
@@ -268,7 +267,7 @@ for the same reason.
 - [x] Copy guard clean (no emoji, no clichés, no Grok/study framing)
 - [x] No dead buttons, no placeholder features
 - [ ] Siva adds his free Gemini key in Settings and sends one real message
-- [ ] Siva creates the `atlas-agent` GitHub repo, then push straight to main + enable Pages
+- [ ] Siva enables Pages on the `atlas-agent` repo
 - [ ] Siva tries it on his phone (390px) for real
 
 ## Risks

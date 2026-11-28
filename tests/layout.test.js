@@ -70,6 +70,12 @@ describe('layout guards', () => {
   it('keeps code blocks inside the column (no mobile clip)', () => {
     assert.ok(css.includes('.code-block { margin: 0 0 14px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; max-width: 100%; }'));
     assert.ok(css.includes('max-width: 100%;\n  background: var(--code-bg);'));
+    // The head label truncates instead of pushing the Copy button out
+    // of the block, and the flex min-width chain stops a long line in
+    // a <pre> from forcing the chat column wider than the phone.
+    assert.ok(css.includes('.code-block-head > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }'));
+    assert.ok(css.includes('.chat-scroll { flex: 1; min-width: 0;'));
+    assert.ok(css.includes('.msg { margin: 0 0 32px; min-width: 0;'));
   });
 
   it('has a mobile breakpoint that hides the sidebar off-canvas', () => {
