@@ -304,4 +304,14 @@ describe('executeTool — calculate and read_file', () => {
     assert.equal(out.data.text.length, MAX_FILE_CHARS);
     assert.equal(out.data.name, 'notes.txt');
   });
+
+  it('reads the full 20,000 characters the app attaches (not a smaller cap)', async () => {
+    // The attach step in app.js keeps the first 20,000 characters and tells
+    // the user that many will be read — read_file must honour the same cap.
+    assert.equal(MAX_FILE_CHARS, 20000);
+    const text = 'y'.repeat(20000);
+    const out = await executeTool('read_file', { question: 'Summarise this' }, { attachedFile: { name: 'notes.txt', text } });
+    assert.equal(out.ok, true);
+    assert.equal(out.data.text.length, 20000);
+  });
 });

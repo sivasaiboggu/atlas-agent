@@ -13,8 +13,8 @@
 //     activeId: string | null }
 
 export const STORAGE_KEY = 'atlas-agent:v1';
-export const DEFAULT_MODEL = 'gemini-2.5-flash';
-export const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-pro'];
+export const DEFAULT_MODEL = 'gemini-3.8-flash';
+export const MODELS = ['gemini-3.8-flash', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-pro'];
 
 export function newId() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();

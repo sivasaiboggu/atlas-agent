@@ -135,6 +135,11 @@ describe('persistence', () => {
     assert.deepEqual(loadState(memoryStorage(JSON.stringify({ version: 99 }))), emptyState());
   });
 
+  it('defaults to Gemini 3.8 Flash, the current Flash model', () => {
+    assert.equal(DEFAULT_MODEL, 'gemini-3.8-flash');
+    assert.equal(emptyState().settings.model, 'gemini-3.8-flash');
+  });
+
   it('falls back to the default model for unknown model names', () => {
     const raw = JSON.stringify({
       version: 1,

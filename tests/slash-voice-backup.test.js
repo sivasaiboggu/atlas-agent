@@ -123,6 +123,11 @@ describe('backup and restore', () => {
     assert.equal(backup.plans.length, 1);
   });
 
+  it('falls back to the current default model when the state has none', () => {
+    const backup = buildBackup({ state: { settings: {}, conversations: [], activeId: null }, tasks: [], notes: [], reminders: [], plans: [] });
+    assert.equal(backup.state.settings.model, 'gemini-3.8-flash');
+  });
+
   it('round-trips: export then parse validates', () => {
     const text = JSON.stringify(buildBackup(sample()));
     const parsed = parseBackup(text);

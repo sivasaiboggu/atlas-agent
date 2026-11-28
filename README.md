@@ -110,8 +110,7 @@ That is the only thing needed. No account, no server, no payment.
 - **Sidebar history**: new chat, rename (inline), delete (two-step
   confirm), search across titles and message text. Everything persists
   in localStorage.
-- **Model picker**: Gemini 2.5 Flash (default), Gemini 2.0 Flash,
-  Gemini 2.5 Pro. If a model is unavailable for your key, or the key is
+- **Model picker**: Gemini 3.8 Flash (default — Google's current Flash model, built for agents), Gemini 2.5 Flash, Gemini 2.0 Flash, Gemini 2.5 Pro. If a model is unavailable for your key, or the key is
   wrong, or quota is hit, the app shows Google's real error in plain
   words — it never invents an answer.
 - **Quick actions**: Search the web, Draft a mail, What's the weather,
@@ -160,8 +159,9 @@ npm test          # node --test tests/*.test.js
 node scripts/smoke.mjs   # headless-Chrome smoke test of the new features
 ```
 
-**176 tests, 176 pass, 0 fail** — markdown (escaping, code blocks, lists,
-links), store (CRUD, search, persistence round-trip, corrupt storage),
+**179 tests, 179 pass, 0 fail** — markdown (escaping, code blocks, lists,
+links), store (CRUD, search, persistence round-trip, corrupt storage,
+default model is Gemini 3.8 Flash),
 Gemini client (SSE parsing incl. split chunks and functionCall parts,
 error mapping for wrong key / missing model / rate limit, abort, no-key
 refusal), agent loop (tool call → result → answer, plan events, tool
@@ -223,11 +223,12 @@ for the same reason.
 - **No key is bundled.** Without your free Gemini key, the app cannot
   chat — by design. It never shows a canned "demo" answer as if it were
   real.
-- **Model names were verified against Google's documented v1beta API**
-  (`gemini-2.5-flash`, `gemini-2.0-flash`, `gemini-2.5-pro`), but live
-  availability depends on your key and quota. A 404 surfaces as a plain
-  "try another model" message. No live call was made from this machine
-  (no key exists here).
+- **Model names were verified against Google AI Studio's docs**
+  (`gemini-3.8-flash` is the current Flash model and the default;
+  `gemini-2.5-flash`, `gemini-2.0-flash`, `gemini-2.5-pro` kept as
+  fallbacks), but live availability depends on your key and quota. A
+  404 surfaces as a plain "try another model" message. No live call
+  was made from this machine (no key exists here).
 - **The key lives in the browser.** It is sent to Google's API with each
   request (that is how client-side Gemini apps work). Do not paste a key
   you use for anything else; a free AI Studio key is the right one.
@@ -261,7 +262,7 @@ for the same reason.
 
 ## Launch checklist
 
-- [x] Tests 176/176 green (+ 11 headless-Chrome smoke checks green)
+- [x] Tests 179/179 green (+ 11 headless-Chrome smoke checks green)
 - [x] Desktop 1280px + mobile 390px, zero overflow, eyeballed
 - [x] Dark + light, same quality
 - [x] Copy guard clean (no emoji, no clichés, no Grok/study framing)

@@ -6,7 +6,7 @@
 
 export const MAX_SEARCH_RESULTS = 5;
 export const MAX_PAGE_CHARS = 8000;
-export const MAX_FILE_CHARS = 12000;
+export const MAX_FILE_CHARS = 20000; // must match the attach cap in src/app.js and the README
 
 // ---------- URL builders (pure) ----------
 

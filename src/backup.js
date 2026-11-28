@@ -5,6 +5,8 @@
 // validates the file before touching anything; a bad file changes
 // nothing.
 
+import { DEFAULT_MODEL } from './store.js';
+
 export const BACKUP_APP = 'atlas-agent';
 export const BACKUP_VERSION = 1;
 
@@ -15,7 +17,7 @@ export function buildBackup({ state, tasks, notes, reminders, plans }) {
     exportedAt: new Date().toISOString(),
     state: {
       settings: {
-        model: state?.settings?.model || 'gemini-2.5-flash',
+        model: state?.settings?.model || DEFAULT_MODEL,
         theme: state?.settings?.theme || 'dark',
       },
       conversations: Array.isArray(state?.conversations) ? state.conversations : [],
